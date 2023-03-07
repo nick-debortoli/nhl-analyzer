@@ -1,0 +1,120 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "0.1", 
+      "title": "NHL Projector",
+      "description": "NHL Projecto RESTful API Specification",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:8771",
+    "basePath": "/rest",
+    "tags": [
+      {
+        "name": "Team",
+        "description": "API for Team information"
+      },
+      {
+        "name": "Player",
+        "description": "API for Player information"
+      }
+    ],
+    "schemes": ["http"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+      "/teams/{year}": {
+          "get": {
+              "tags": ["Team"],
+              "summary": "Get all the team data by year",
+              "parameters": [
+                {
+                    "name": "year",
+                    "in": "path",
+                    "description": "Starting year of desired season (ex: 1991)",
+                    "required": true,
+                    "type": "integer"
+                }
+            ],
+              "responses": {
+                  "200": {
+                      "description": "OK",
+                      "schema": {
+                          "$ref": "#/definitions/Teams"
+                      }
+                  }
+              }
+          }
+      },
+      "/players/{year}": {
+          "get": {
+              "tags": ["Player"],
+              "summary": "Get all the player data by year",
+              "parameters": [
+                {
+                    "name": "year",
+                    "in": "path",
+                    "description": "Starting year of desired season (ex: 2009)",
+                    "required": true,
+                    "type": "integer"
+                }
+            ],
+              "responses": {
+                  "200": {
+                      "description": "OK",
+                      "schema": {
+                          "$ref": "#/definitions/Players"
+                      }
+                  }
+              }
+          }
+      }
+    },
+    "definitions": {
+      "Team": {
+          "required": ["id","gp", "wins", "losses", "otLosses", "points", "pointpct", "gf", "ga" ],
+          "properties": {
+                "id" : {
+                    "type": "string",
+                    "uniqueItems": true,
+                    "example": 8,
+                    "description": "Generated ID from data store"
+                },
+              "gp" : {
+                  "type": "integer",
+                  "example": 82,
+                  "description": "Number of games played in the season"
+              },
+              "wins": {
+                  "type": "integer",
+                  "example": 48,
+                  "description": "Wins in the season"
+              },
+              "losses": {
+                  "type": "integer",
+                  "example": 26,
+                  "description": "Losses in the season"
+              },
+              "otLosses": {
+                  "type": "integer",
+                  "example":8,
+                  "description": "Overtime losses in the season"
+              }
+          }
+      },
+      "Player": {
+          "required": ["id"],
+          "properties": {
+              "id" : {
+                  "type": "string",
+                  "uniqueItems": true,
+                  "example": "1edb779a-7394-6eb1-178b-5acbdfe0ed98",
+                  "description": "Generated ID from data store"
+              }
+          }
+      }
+    }
+  
+  }
