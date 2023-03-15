@@ -2,8 +2,8 @@
     "swagger": "2.0",
     "info": {
       "version": "0.1", 
-      "title": "NHL Projector",
-      "description": "NHL Projecto RESTful API Specification",
+      "title": "NHL Analyzer",
+      "description": "NHL Analyzer RESTful API Specification",
       "license": {
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT"

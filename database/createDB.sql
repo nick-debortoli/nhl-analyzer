@@ -11,29 +11,31 @@ USE `nhl-data` ;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Franchise`
+-- id is 3 letter abbreviation (ex. PIT)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Franchise` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Franchise` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(3) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `yearFounded` INT NOT NULL,
+  `yearDefunct` INT NULL,
   `stanleyCups` INT NULL,
   `isActive` TINYINT NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Season`
+-- id is year (ex. 2017)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Season` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Season` (
   `id` INT NOT NULL,
   `year` INT NOT NULL,
-  `championID` INT NOT NULL,
-  `presidentsTrophyID` INT NOT NULL,
+  `championID` VARCHAR(7) NOT NULL,
+  `presidentsTrophyID` VARCHAR(7) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_Season_Team1_idx` (`championID` ASC) VISIBLE,
   INDEX `fk_Season_Team2_idx` (`presidentsTrophyID` ASC) VISIBLE,
@@ -52,12 +54,13 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Team`
+-- id is three letter abbreviation and year (PIT2016)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Team` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Team` (
-  `id` INT NOT NULL,
-  `franchiseID` INT NOT NULL,
+  `id` VARCHAR(7) NOT NULL,
+  `franchiseID` VARCHAR(3) NOT NULL,
   `seasonID` INT NOT NULL,
   `teamName` VARCHAR(100) NOT NULL,
   `avgAge` INT NULL,
@@ -91,9 +94,9 @@ CREATE TABLE IF NOT EXISTS `nhl-data`.`Team` (
   `isPlayoffTeam` TINYINT NOT NULL,
   `result` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_Team_TeamInfo_idx` (`franchiseID` ASC) VISIBLE,
+  INDEX `fk_Team_Franchise_idx` (`franchiseID` ASC) VISIBLE,
   INDEX `fk_Team_Season1_idx` (`seasonID` ASC) VISIBLE,
-  CONSTRAINT `fk_Team_TeamInfo`
+  CONSTRAINT `fk_Team_Franchise`
     FOREIGN KEY (`franchiseID`)
     REFERENCES `nhl-data`.`Franchise` (`id`)
     ON DELETE NO ACTION
@@ -105,14 +108,14 @@ CREATE TABLE IF NOT EXISTS `nhl-data`.`Team` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-
 -- -----------------------------------------------------
 -- Table `nhl-data`.`PlayerInfo`
+-- id is player name and birth year (ex. CrosbySidney1987)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`PlayerInfo` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`PlayerInfo` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(100)  NOT NULL,
   `firstName` VARCHAR(100) NOT NULL,
   `lastName` VARCHAR(100) NOT NULL,
   `position` VARCHAR(2) NOT NULL,
@@ -130,16 +133,15 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Goalie`
+-- id is season, player name, and birth year (ex. 2016FleuryMarcAndre1984)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Goalie` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Goalie` (
-  `id` INT NOT NULL,
-  `teamID` INT NOT NULL,
-  `infoID` INT NOT NULL,
+  `id` VARCHAR(100) NOT NULL,
+  `teamID` VARCHAR(7) NOT NULL,
+  `infoID` VARCHAR(100) NOT NULL,
   `isCurrent` TINYINT NOT NULL,
-  `firstName` VARCHAR(100) NOT NULL,
-  `lastName` VARCHAR(100) NOT NULL,
   `gamesPlayed` INT NOT NULL,
   `gamesStarted` INT NULL,
   `wins` INT NOT NULL,
@@ -181,14 +183,13 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`GoalieCareerStats`
+-- id is avg plus player name and birth year (ex. AvgFleuryMarcAndre1984)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`GoalieCareerStats` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`GoalieCareerStats` (
-  `id` INT NOT NULL,
-  `infoID` INT NOT NULL,
-  `firstName` VARCHAR(100) NOT NULL,
-  `lastName` VARCHAR(100) NOT NULL,
+  `id` VARCHAR(100) NOT NULL,
+  `infoID` VARCHAR(100) NOT NULL,
   `gamesPlayed` INT NOT NULL,
   `gamesStarted` INT NULL,
   `wins` INT NOT NULL,
@@ -224,11 +225,12 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`SeasonAverageGoalies`
+-- id is season year plus GoalieAvg (2016GoalieAvg)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`SeasonAverageGoalies` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`SeasonAverageGoalies` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(13) NOT NULL,
   `gamesPlayed` INT NOT NULL,
   `gamesStarted` INT NULL,
   `wins` INT NOT NULL,
@@ -266,14 +268,15 @@ USE `nhl-data` ;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Game`
+-- id is Home abbreviation, Away abbreviation, and date (ex. PITWSH20160302)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Game` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Game` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(14) NOT NULL,
   `date` DATETIME NOT NULL,
-  `homeTeamID` INT NOT NULL,
-  `awayTeamID` INT NOT NULL,
+  `homeTeamID` VARCHAR(7) NOT NULL,
+  `awayTeamID` VARCHAR(7) NOT NULL,
   `result` VARCHAR(5) NOT NULL,
   `isOT` TINYINT NULL,
   `homePoints` INT NULL,
@@ -296,15 +299,16 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Leader`
+-- id is year and category 2016Goals
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Leader` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Leader` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(100) NOT NULL,
   `category` VARCHAR(100) NOT NULL,
   `value` DECIMAL(6,3) NOT NULL,
   `seasonID` INT NOT NULL,
-  `playerID` INT NOT NULL,
+  `playerID` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_Leader_Season1_idx` (`seasonID` ASC) VISIBLE,
   INDEX `fk_Leader_PlayerInfo1_idx` (`playerID` ASC) VISIBLE,
@@ -323,11 +327,12 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`SeasonAverageTeams`
+-- id is season year plus TeamAvg (2016TeamAvg)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`SeasonAverageTeams` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`SeasonAverageTeams` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(11) NOT NULL,
   `avgAge` INT NULL,
   `gamesPlayed` INT NOT NULL,
   `wins` INT NOT NULL,
@@ -365,17 +370,18 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Skater`
+-- id is season, player name, and birth year (ex. 2016MalkinEvgeni1986)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Skater` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`Skater` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(100) NOT NULL,
   `gamesPlayed` INT NOT NULL,
   `goals` INT NOT NULL,
   `assists` INT NOT NULL,
   `points` INT NOT NULL,
   `plusMinus` INT NULL,
-  `penaltyMinues` INT NULL,
+  `penaltyMinutes` INT NULL,
   `evenStrengthGoals` INT NULL,
   `powerPlayGoals` INT NULL,
   `shortHandedGoals` INT NULL,
@@ -396,10 +402,8 @@ CREATE TABLE IF NOT EXISTS `nhl-data`.`Skater` (
   `takeaways` INT NULL,
   `giveaways` INT NULL,
   `isCurrent` TINYINT NOT NULL,
-  `firstName` VARCHAR(100) NOT NULL,
-  `lastName` VARCHAR(100) NOT NULL,
-  `infoID` INT NOT NULL,
-  `teamID` INT NOT NULL,
+  `infoID` VARCHAR(100) NOT NULL,
+  `teamID` VARCHAR(7) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_Skater_PlayerInfo1_idx` (`infoID` ASC) VISIBLE,
   INDEX `fk_Skater_Team1_idx` (`teamID` ASC) VISIBLE,
@@ -418,17 +422,18 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`SkaterCareerStats`
+-- id is avg plus player name and birth year (ex. AvgCrosbySidney1987)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`SkaterCareerStats` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`SkaterCareerStats` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(100) NOT NULL,
   `gamesPlayed` INT NOT NULL,
   `goals` INT NOT NULL,
   `assists` INT NOT NULL,
   `points` INT NOT NULL,
   `plusMinus` INT NULL,
-  `penaltyMinues` INT NULL,
+  `penaltyMinutes` INT NULL,
   `evenStrengthGoals` INT NULL,
   `powerPlayGoals` INT NULL,
   `shortHandedGoals` INT NULL,
@@ -448,9 +453,7 @@ CREATE TABLE IF NOT EXISTS `nhl-data`.`SkaterCareerStats` (
   `hits` INT NULL,
   `takeaways` INT NULL,
   `giveaways` INT NULL,
-  `firstName` VARCHAR(100) NOT NULL,
-  `lastName` VARCHAR(100) NOT NULL,
-  `infoID` INT NOT NULL,
+  `infoID` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_SkaterAverageStats_PlayerInfo1_idx` (`infoID` ASC) VISIBLE,
   CONSTRAINT `fk_SkaterAverageStats_PlayerInfo1`
@@ -463,17 +466,18 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`seasonAverageSkaters`
+-- id is season year plus SkaterAvg (2016SkaterAvg)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`seasonAverageSkaters` ;
 
 CREATE TABLE IF NOT EXISTS `nhl-data`.`seasonAverageSkaters` (
-  `id` INT NOT NULL,
+  `id` VARCHAR(13) NOT NULL,
   `gamesPlayed` INT NOT NULL,
   `goals` INT NOT NULL,
   `assists` INT NOT NULL,
   `points` INT NOT NULL,
   `plusMinus` INT NULL,
-  `penaltyMinues` INT NULL,
+  `penaltyMinutes` INT NULL,
   `evenStrengthGoals` INT NULL,
   `powerPlayGoals` INT NULL,
   `shortHandedGoals` INT NULL,
@@ -507,3 +511,5 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
