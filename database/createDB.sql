@@ -183,7 +183,7 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`GoalieCareerStats`
--- id is avg plus player name and birth year (ex. AvgFleuryMarcAndre1984)
+-- id is player name and birth year plus Avg (ex. FleuryMarcAndre1984Avg)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`GoalieCareerStats` ;
 
@@ -370,7 +370,7 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`Skater`
--- id is season, player name, and birth year (ex. 2016MalkinEvgeni1986)
+-- id is  player name, and birth year plus _ season, and teamabbv(ex. MalkinEvgeni1986_2016PIT)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`Skater` ;
 
@@ -422,7 +422,7 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `nhl-data`.`SkaterCareerStats`
--- id is avg plus player name and birth year (ex. AvgCrosbySidney1987)
+-- id is player name and birth year plus avg (ex. CrosbySidney1987Avg)
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `nhl-data`.`SkaterCareerStats` ;
 
